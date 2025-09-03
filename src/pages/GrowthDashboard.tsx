@@ -5,10 +5,9 @@ import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Input } from "@/components/ui/input";
-import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell, FunnelChart, Funnel } from "recharts";
+import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell } from "recharts";
 import { 
   TrendingUp, 
-  TrendingDown, 
   Users, 
   UserPlus, 
   DollarSign, 
@@ -17,9 +16,9 @@ import {
   ArrowUpRight,
   ArrowDownRight
 } from "lucide-react";
-import { Link } from "react-router-dom";
 
-const COLORS = ['hsl(var(--primary))', 'hsl(var(--secondary))', 'hsl(var(--accent))', 'hsl(var(--muted))'];
+const PIE_CHART_COLORS = ['#3b82f6', '#60a5fa', '#a78bfa', '#c4b5fd'];
+const FUNNEL_COLORS = ['#3b82f6', '#60a5fa', '#a78bfa'];
 
 // Mock data
 const kpiData = {
@@ -48,9 +47,9 @@ const revenueMix = [
 ];
 
 const clientFunnel = [
-  { name: 'Accounts Opened', value: 856, fill: 'hsl(var(--primary))' },
-  { name: 'Accounts Activated', value: 672, fill: 'hsl(var(--secondary))' },
-  { name: 'First Trade Made', value: 524, fill: 'hsl(var(--accent))' }
+  { name: 'Accounts Opened', value: 856, fill: FUNNEL_COLORS[0] },
+  { name: 'Accounts Activated', value: 672, fill: FUNNEL_COLORS[1] },
+  { name: 'First Trade Made', value: 524, fill: FUNNEL_COLORS[2] }
 ];
 
 const subBrokerData = [
@@ -67,11 +66,6 @@ const topClients = [
   { clientId: 'CL003', name: 'Rohit Trading Co', brokerage: 65430, trades: 245 },
   { clientId: 'CL004', name: 'Sneha Capital', brokerage: 58920, trades: 234 },
   { clientId: 'CL005', name: 'Vikram Securities', brokerage: 52340, trades: 189 },
-  { clientId: 'CL006', name: 'Kavya Holdings', brokerage: 47650, trades: 167 },
-  { clientId: 'CL007', name: 'Arjun Traders', brokerage: 43280, trades: 156 },
-  { clientId: 'CL008', name: 'Meera Investments', brokerage: 39870, trades: 145 },
-  { clientId: 'CL009', name: 'Karan Financial', brokerage: 36450, trades: 134 },
-  { clientId: 'CL010', name: 'Tanya Securities', brokerage: 33290, trades: 123 }
 ];
 
 export default function GrowthDashboard() {
@@ -79,7 +73,7 @@ export default function GrowthDashboard() {
   const [selectedSegment, setSelectedSegment] = useState("Overall");
   const [searchTerm, setSearchTerm] = useState("");
 
-  const formatCurrency = (amount: number) => {
+  const formatCurrency = (amount) => {
     return new Intl.NumberFormat('en-IN', {
       style: 'currency',
       currency: 'INR',
@@ -94,16 +88,16 @@ export default function GrowthDashboard() {
   );
 
   return (
-    <div className="p-6 space-y-6 bg-background min-h-screen">
+    <div className="p-6 space-y-6 bg-gray-50 min-h-screen text-gray-900">
       {/* Header with Period Filter */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold text-foreground">Growth & Performance Dashboard</h1>
-          <p className="text-muted-foreground">Business analytics and revenue insights</p>
+          <h1 className="text-3xl font-bold text-gray-800">Growth & Performance Dashboard</h1>
+          <p className="text-gray-500">Business analytics and revenue insights</p>
         </div>
         <div className="flex items-center space-x-4">
           <Select value={selectedPeriod} onValueChange={setSelectedPeriod}>
-            <SelectTrigger className="w-32">
+            <SelectTrigger className="w-32 bg-white border-gray-300">
               <SelectValue placeholder="Period" />
             </SelectTrigger>
             <SelectContent>
@@ -119,108 +113,100 @@ export default function GrowthDashboard() {
 
       {/* KPI Scorecards */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6">
-        <Card className="bg-gradient-to-br from-primary/10 to-primary/5 border-primary/20">
+        <Card className="bg-white border-gray-200">
           <CardHeader className="pb-3">
-            <CardTitle className="text-sm font-medium text-muted-foreground flex items-center">
-              <DollarSign className="w-4 h-4 mr-2" />
+            <CardTitle className="text-sm font-medium text-gray-500 flex items-center">
+              <DollarSign className="w-4 h-4 mr-2 text-blue-500" />
               Total Brokerage Revenue
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold text-foreground mb-2">
+            <div className="text-2xl font-bold text-gray-800 mb-2">
               {formatCurrency(kpiData.totalRevenue.value)}
             </div>
             <div className="flex items-center space-x-1">
-              {kpiData.totalRevenue.change > 0 ? (
-                <ArrowUpRight className="w-4 h-4 text-success" />
-              ) : (
-                <ArrowDownRight className="w-4 h-4 text-destructive" />
-              )}
-              <span className={`text-sm ${kpiData.totalRevenue.change > 0 ? 'text-success' : 'text-destructive'}`}>
-                {Math.abs(kpiData.totalRevenue.change)}% {kpiData.totalRevenue.period}
+              <ArrowUpRight className="w-4 h-4 text-green-600" />
+              <span className="text-sm text-green-600">
+                {kpiData.totalRevenue.change}% {kpiData.totalRevenue.period}
               </span>
             </div>
           </CardContent>
         </Card>
 
-        <Card className="bg-gradient-to-br from-secondary/10 to-secondary/5 border-secondary/20">
+        <Card className="bg-white border-gray-200">
           <CardHeader className="pb-3">
-            <CardTitle className="text-sm font-medium text-muted-foreground flex items-center">
-              <Users className="w-4 h-4 mr-2" />
+            <CardTitle className="text-sm font-medium text-gray-500 flex items-center">
+              <Users className="w-4 h-4 mr-2 text-indigo-500" />
               Active Clients
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold text-foreground mb-2">
+            <div className="text-2xl font-bold text-gray-800 mb-2">
               {kpiData.activeClients.value.toLocaleString()}
             </div>
             <div className="flex items-center space-x-1">
-              {kpiData.activeClients.change > 0 ? (
-                <ArrowUpRight className="w-4 h-4 text-success" />
-              ) : (
-                <ArrowDownRight className="w-4 h-4 text-destructive" />
-              )}
-              <span className={`text-sm ${kpiData.activeClients.change > 0 ? 'text-success' : 'text-destructive'}`}>
-                {Math.abs(kpiData.activeClients.change)}% {kpiData.activeClients.period}
-              </span>
+                <ArrowDownRight className="w-4 h-4 text-red-500" />
+                <span className="text-sm text-red-500">
+                    {Math.abs(kpiData.activeClients.change)}% {kpiData.activeClients.period}
+                </span>
             </div>
           </CardContent>
         </Card>
 
-        <Card className="bg-gradient-to-br from-accent/10 to-accent/5 border-accent/20">
+        <Card className="bg-white border-gray-200">
           <CardHeader className="pb-3">
-            <CardTitle className="text-sm font-medium text-muted-foreground flex items-center">
-              <UserPlus className="w-4 h-4 mr-2" />
+            <CardTitle className="text-sm font-medium text-gray-500 flex items-center">
+              <UserPlus className="w-4 h-4 mr-2 text-purple-500" />
               New Client Acquisitions
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold text-foreground mb-2">
+            <div className="text-2xl font-bold text-gray-800 mb-2">
               {kpiData.newClients.value}
             </div>
             <div className="flex items-center space-x-1">
-              <ArrowUpRight className="w-4 h-4 text-success" />
-              <span className="text-sm text-success">
+              <ArrowUpRight className="w-4 h-4 text-green-600" />
+              <span className="text-sm text-green-600">
                 {kpiData.newClients.change}% {kpiData.newClients.period}
               </span>
             </div>
           </CardContent>
         </Card>
 
-        <Card className="bg-gradient-to-br from-warning/10 to-warning/5 border-warning/20">
+        <Card className="bg-white border-gray-200">
           <CardHeader className="pb-3">
-            <CardTitle className="text-sm font-medium text-muted-foreground flex items-center">
-              <Activity className="w-4 h-4 mr-2" />
+            <CardTitle className="text-sm font-medium text-gray-500 flex items-center">
+              <Activity className="w-4 h-4 mr-2 text-amber-500" />
               Client Activation Rate
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold text-foreground mb-2">
+            <div className="text-2xl font-bold text-gray-800 mb-2">
               {kpiData.activationRate.value}%
             </div>
             <div className="flex items-center space-x-1">
-              <ArrowUpRight className="w-4 h-4 text-success" />
-              <span className="text-sm text-success">
+              <ArrowUpRight className="w-4 h-4 text-green-600" />
+              <span className="text-sm text-green-600">
                 {kpiData.activationRate.change}% {kpiData.activationRate.period}
               </span>
             </div>
           </CardContent>
         </Card>
 
-        <Card className="bg-gradient-to-br from-success/10 to-success/5 border-success/20">
+        <Card className="bg-white border-gray-200">
           <CardHeader className="pb-3">
-            <CardTitle className="text-sm font-medium text-muted-foreground flex items-center">
-              <TrendingUp className="w-4 h-4 mr-2" />
-              Average Revenue Per User
+            <CardTitle className="text-sm font-medium text-gray-500 flex items-center">
+              <TrendingUp className="w-4 h-4 mr-2 text-teal-500" />
+              Avg. Revenue Per User
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold text-foreground mb-2">
+            <div className="text-2xl font-bold text-gray-800 mb-2">
               {formatCurrency(kpiData.arpu.value)}
             </div>
             <div className="flex items-center space-x-1">
-              <ArrowUpRight className="w-4 h-4 text-success" />
-              <span className="text-sm text-success">
+              <ArrowUpRight className="w-4 h-4 text-green-600" />
+              <span className="text-sm text-green-600">
                 {kpiData.arpu.change}% {kpiData.arpu.period}
               </span>
             </div>
@@ -230,13 +216,12 @@ export default function GrowthDashboard() {
 
       {/* Charts Section */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        {/* Revenue Over Time */}
-        <Card className="lg:col-span-2">
+        <Card className="lg:col-span-2 bg-white border-gray-200">
           <CardHeader>
             <div className="flex items-center justify-between">
-              <CardTitle>Brokerage & Turnover Over Time</CardTitle>
+              <CardTitle className="text-gray-800">Brokerage & Turnover Over Time</CardTitle>
               <Select value={selectedSegment} onValueChange={setSelectedSegment}>
-                <SelectTrigger className="w-32">
+                <SelectTrigger className="w-32 bg-white border-gray-300">
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
@@ -251,56 +236,46 @@ export default function GrowthDashboard() {
           <CardContent>
             <ResponsiveContainer width="100%" height={300}>
               <LineChart data={revenueOverTime}>
-                <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
+                <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
                 <XAxis 
                   dataKey="date" 
-                  stroke="hsl(var(--muted-foreground))"
+                  stroke="#6b7280"
                   tickFormatter={(value) => new Date(value).toLocaleDateString('en-IN', { month: 'short', day: 'numeric' })}
                 />
-                <YAxis stroke="hsl(var(--muted-foreground))" />
+                <YAxis stroke="#6b7280" />
                 <Tooltip 
                   contentStyle={{ 
-                    backgroundColor: 'hsl(var(--popover))', 
-                    border: '1px solid hsl(var(--border))',
+                    backgroundColor: 'white', 
+                    border: '1px solid #e5e7eb',
                     borderRadius: '8px'
                   }}
-                  formatter={(value, name) => [
-                    name === 'brokerage' ? formatCurrency(Number(value)) : formatCurrency(Number(value)),
-                    name === 'brokerage' ? 'Brokerage' : 'Turnover'
-                  ]}
+                  formatter={(value, name) => [formatCurrency(Number(value)), name === 'brokerage' ? 'Brokerage' : 'Turnover']}
                 />
-                <Line type="monotone" dataKey="brokerage" stroke="hsl(var(--primary))" strokeWidth={2} />
-                <Line type="monotone" dataKey="turnover" stroke="hsl(var(--secondary))" strokeWidth={2} />
+                <Line type="monotone" dataKey="brokerage" stroke="#3b82f6" strokeWidth={2} />
+                <Line type="monotone" dataKey="turnover" stroke="#a78bfa" strokeWidth={2} />
               </LineChart>
             </ResponsiveContainer>
           </CardContent>
         </Card>
 
-        {/* Revenue Mix */}
-        <Card>
+        <Card className="bg-white border-gray-200">
           <CardHeader>
-            <CardTitle>Revenue Mix by Segment</CardTitle>
+            <CardTitle className="text-gray-800">Revenue Mix by Segment</CardTitle>
           </CardHeader>
           <CardContent>
             <ResponsiveContainer width="100%" height={300}>
               <PieChart>
                 <Pie
-                  data={revenueMix}
-                  cx="50%"
-                  cy="50%"
-                  outerRadius={80}
-                  dataKey="value"
+                  data={revenueMix} cx="50%" cy="50%" outerRadius={80} dataKey="value"
                   label={({ name, value }) => `${name}: ${value}%`}
                 >
                   {revenueMix.map((entry, index) => (
-                    <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                    <Cell key={`cell-${index}`} fill={PIE_CHART_COLORS[index % PIE_CHART_COLORS.length]} />
                   ))}
                 </Pie>
                 <Tooltip 
                   contentStyle={{ 
-                    backgroundColor: 'hsl(var(--popover))', 
-                    border: '1px solid hsl(var(--border))',
-                    borderRadius: '8px'
+                    backgroundColor: 'white', border: '1px solid #e5e7eb', borderRadius: '8px'
                   }}
                   formatter={(value, name) => [`${value}% (${formatCurrency(revenueMix.find(r => r.name === name)?.amount || 0)})`, 'Share']}
                 />
@@ -310,10 +285,9 @@ export default function GrowthDashboard() {
         </Card>
       </div>
 
-      {/* Client Growth Funnel */}
-      <Card>
+      <Card className="bg-white border-gray-200">
         <CardHeader>
-          <CardTitle>Client Growth Funnel</CardTitle>
+          <CardTitle className="text-gray-800">Client Growth Funnel</CardTitle>
         </CardHeader>
         <CardContent>
           <div className="grid grid-cols-3 gap-6">
@@ -327,9 +301,9 @@ export default function GrowthDashboard() {
                     {stage.value.toLocaleString()}
                   </div>
                 </div>
-                <div className="text-sm font-medium text-foreground">{stage.name}</div>
+                <div className="text-sm font-medium text-gray-800">{stage.name}</div>
                 {index < clientFunnel.length - 1 && (
-                  <div className="text-xs text-muted-foreground mt-1">
+                  <div className="text-xs text-gray-500 mt-1">
                     {((clientFunnel[index + 1].value / stage.value) * 100).toFixed(1)}% conversion
                   </div>
                 )}
@@ -339,20 +313,16 @@ export default function GrowthDashboard() {
         </CardContent>
       </Card>
 
-      {/* Tables Section */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        {/* Sub-Broker Leaderboard */}
-        <Card>
+        <Card className="bg-white border-gray-200">
           <CardHeader>
             <div className="flex items-center justify-between">
-              <CardTitle>Sub-Broker Performance</CardTitle>
+              <CardTitle className="text-gray-800">Sub-Broker Performance</CardTitle>
               <div className="relative">
-                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400" />
                 <Input
-                  placeholder="Search sub-brokers..."
-                  value={searchTerm}
-                  onChange={(e) => setSearchTerm(e.target.value)}
-                  className="pl-10 w-64"
+                  placeholder="Search sub-brokers..." value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)}
+                  className="pl-10 w-64 bg-white border-gray-300"
                 />
               </div>
             </div>
@@ -360,27 +330,27 @@ export default function GrowthDashboard() {
           <CardContent>
             <Table>
               <TableHeader>
-                <TableRow>
-                  <TableHead>Sub-Broker</TableHead>
-                  <TableHead className="text-right">New Clients</TableHead>
-                  <TableHead className="text-right">Active Clients</TableHead>
-                  <TableHead className="text-right">Brokerage</TableHead>
+                <TableRow className="border-gray-200">
+                  <TableHead className="text-gray-500">Sub-Broker</TableHead>
+                  <TableHead className="text-right text-gray-500">New Clients</TableHead>
+                  <TableHead className="text-right text-gray-500">Active Clients</TableHead>
+                  <TableHead className="text-right text-gray-500">Brokerage</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
                 {filteredSubBrokers.map((broker) => (
-                  <TableRow key={broker.id}>
+                  <TableRow key={broker.id} className="border-gray-200">
                     <TableCell>
                       <div>
-                        <div className="font-medium">{broker.name}</div>
-                        <div className="text-sm text-muted-foreground">{broker.id}</div>
+                        <div className="font-medium text-gray-800">{broker.name}</div>
+                        <div className="text-sm text-gray-500">{broker.id}</div>
                       </div>
                     </TableCell>
                     <TableCell className="text-right">
-                      <Badge variant="secondary">{broker.newClients}</Badge>
+                      <Badge className="bg-gray-100 text-gray-800">{broker.newClients}</Badge>
                     </TableCell>
-                    <TableCell className="text-right">{broker.activeClients}</TableCell>
-                    <TableCell className="text-right font-medium">
+                    <TableCell className="text-right text-gray-800">{broker.activeClients}</TableCell>
+                    <TableCell className="text-right font-medium text-gray-800">
                       {formatCurrency(broker.brokerage)}
                     </TableCell>
                   </TableRow>
@@ -390,41 +360,40 @@ export default function GrowthDashboard() {
           </CardContent>
         </Card>
 
-        {/* Top Performing Clients */}
-        <Card>
+        <Card className="bg-white border-gray-200">
           <CardHeader>
-            <CardTitle>Top Performing Clients</CardTitle>
+            <CardTitle className="text-gray-800">Top Performing Clients</CardTitle>
           </CardHeader>
           <CardContent>
             <Table>
               <TableHeader>
-                <TableRow>
-                  <TableHead>Client</TableHead>
-                  <TableHead className="text-right">Trades</TableHead>
-                  <TableHead className="text-right">Brokerage</TableHead>
+                <TableRow className="border-gray-200">
+                  <TableHead className="text-gray-500">Client</TableHead>
+                  <TableHead className="text-right text-gray-500">Trades</TableHead>
+                  <TableHead className="text-right text-gray-500">Brokerage</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
                 {topClients.map((client, index) => (
-                  <TableRow key={client.clientId}>
+                  <TableRow key={client.clientId} className="border-gray-200">
                     <TableCell>
-                      <div className="flex items-center space-x-2">
-                        <Badge variant="outline" className="text-xs">
+                      <div className="flex items-center space-x-3">
+                        <span className="text-right text-gray-800">
                           #{index + 1}
-                        </Badge>
+                        </span>
                         <div>
-                          <Link 
-                            to={`/cases?client=${client.clientId}`}
-                            className="font-medium text-primary hover:underline"
+                          <a 
+                            href={`/cases?client=${client.clientId}`}
+                            className="font-medium text-blue-600 hover:underline"
                           >
                             {client.name}
-                          </Link>
-                          <div className="text-sm text-muted-foreground">{client.clientId}</div>
+                          </a>
+                          <div className="text-sm text-gray-500">{client.clientId}</div>
                         </div>
                       </div>
                     </TableCell>
-                    <TableCell className="text-right">{client.trades}</TableCell>
-                    <TableCell className="text-right font-medium">
+                    <TableCell className="text-right text-gray-800">{client.trades}</TableCell>
+                    <TableCell className="text-right font-medium text-gray-800">
                       {formatCurrency(client.brokerage)}
                     </TableCell>
                   </TableRow>
@@ -437,3 +406,4 @@ export default function GrowthDashboard() {
     </div>
   );
 }
+

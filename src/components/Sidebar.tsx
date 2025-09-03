@@ -15,8 +15,7 @@ import {
   ChevronRight,
   Target,
   Lock,
-  Zap,
-  TrendingUp
+  TrendingUp,
 } from "lucide-react";
 
 const navigationItems = [
@@ -24,62 +23,68 @@ const navigationItems = [
     title: "Dashboard",
     href: "/",
     icon: BarChart3,
-    description: "Overview & KPIs"
+    description: "Overview & KPIs",
   },
   {
     title: "Growth Analytics",
     href: "/growth",
     icon: TrendingUp,
-    description: "Business Performance"
+    description: "Business Performance",
   },
   {
     title: "Case Manager",
     href: "/cases",
     icon: AlertTriangle,
-    description: "Alerts & Investigation"
+    description: "Alerts & Investigation",
   },
   {
     title: "Graph Analytics",
     href: "/graph",
     icon: Network,
-    description: "Entity Relationships"
+    description: "Entity Relationships",
+  },
+  {
+    title: "Advisory & Compliance",
+    href: "/advisory",
+    icon: Shield,
+    description: "Regulatory Guidance",
   },
   {
     title: "Rule Engine",
     href: "/rules",
     icon: FileText,
-    description: "Reg-as-Code"
+    description: "Reg-as-Code",
   },
   {
     title: "Federation Console",
     href: "/federation",
     icon: Users,
-    description: "Federated Learning"
+    description: "Federated Learning",
   },
   {
     title: "Connectors",
     href: "/connectors",
     icon: Database,
-    description: "Data Ingestion"
+    description: "Data Ingestion",
   },
   {
     title: "Audit Shield",
     href: "/audit",
     icon: Lock,
-    description: "Merkle Proofs"
+    description: "Merkle Proofs",
   },
   {
     title: "Marketplace",
     href: "/marketplace",
     icon: Target,
-    description: "Compliance Apps"
+    description: "Compliance Apps",
   },
   {
     title: "Settings",
     href: "/settings",
     icon: Settings,
-    description: "Configuration"
-  }
+    description: "Configuration",
+  },
 ];
 
 export function Sidebar() {
@@ -87,20 +92,22 @@ export function Sidebar() {
   const location = useLocation();
 
   return (
-    <div className={cn(
-      "bg-sidebar border-r border-sidebar-border h-screen transition-all duration-300",
-      collapsed ? "w-16" : "w-64"
-    )}>
+    <div
+      className={cn(
+        "bg-gray-50 border-r border-gray-200 h-screen transition-all duration-300",
+        collapsed ? "w-16" : "w-64"
+      )}
+    >
       {/* Header */}
-      <div className="flex items-center justify-between p-4 border-b border-sidebar-border">
+      <div className="flex items-center justify-between p-4 border-b border-gray-200">
         {!collapsed && (
           <div className="flex items-center space-x-2">
-            <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-primary to-primary/70 flex items-center justify-center">
-              <Zap className="w-4 h-4 text-primary-foreground" />
+            <div className="w-8 h-8 rounded-lg bg-blue-800 flex items-center justify-center">
+              <Shield className="w-4 h-4 text-primary-foreground" />
             </div>
             <div>
-              <h1 className="text-sm font-bold text-sidebar-foreground">Hyperion</h1>
-              <p className="text-xs text-sidebar-foreground/60">UCP v1.0</p>
+              <h1 className="text-sm font-bold text-gray-900">Hyperion</h1>
+              <p className="text-xs text-gray-500">UCP v1.0</p>
             </div>
           </div>
         )}
@@ -108,9 +115,13 @@ export function Sidebar() {
           variant="ghost"
           size="sm"
           onClick={() => setCollapsed(!collapsed)}
-          className="h-8 w-8 p-0 text-sidebar-foreground/60 hover:text-sidebar-foreground hover:bg-sidebar-accent"
+          className="h-8 w-8 p-0 text-gray-500 hover:text-gray-900 hover:bg-gray-200"
         >
-          {collapsed ? <ChevronRight className="w-4 h-4" /> : <ChevronLeft className="w-4 h-4" />}
+          {collapsed ? (
+            <ChevronRight className="w-4 h-4" />
+          ) : (
+            <ChevronLeft className="w-4 h-4" />
+          )}
         </Button>
       </div>
 
@@ -123,18 +134,18 @@ export function Sidebar() {
               <Button
                 variant={isActive ? "default" : "ghost"}
                 className={cn(
-                  "w-full justify-start h-10 transition-all",
-                  collapsed ? "px-2" : "px-3",
-                  isActive 
-                    ? "bg-sidebar-primary text-sidebar-primary-foreground shadow-lg" 
-                    : "text-sidebar-foreground/80 hover:text-sidebar-foreground hover:bg-sidebar-accent"
+                  "w-full justify-start h-auto transition-all py-2",
+                  collapsed ? "px-2 h-10" : "px-3",
+                  isActive
+                    ? "shadow-lg"
+                    : "text-gray-600 hover:text-gray-900 hover:bg-gray-100"
                 )}
               >
                 <item.icon className={cn("w-4 h-4", collapsed ? "mr-0" : "mr-3")} />
                 {!collapsed && (
                   <div className="flex flex-col items-start">
-                    <span className="text-sm font-medium">{item.title}</span>
-                    <span className="text-xs opacity-70">{item.description}</span>
+                    <span className="text-sm font-medium leading-tight">{item.title}</span>
+                    <span className="text-xs opacity-70 leading-tight">{item.description}</span>
                   </div>
                 )}
               </Button>
@@ -142,21 +153,6 @@ export function Sidebar() {
           );
         })}
       </nav>
-
-      {/* Footer */}
-      {!collapsed && (
-        <div className="absolute bottom-4 left-4 right-4">
-          <div className="p-3 rounded-lg bg-sidebar-accent/50 border border-sidebar-border">
-            <div className="flex items-center space-x-2 mb-2">
-              <Shield className="w-4 h-4 text-accent" />
-              <span className="text-xs font-medium text-sidebar-foreground">Security Status</span>
-            </div>
-            <div className="text-xs text-sidebar-foreground/70">
-              All systems operational
-            </div>
-          </div>
-        </div>
-      )}
     </div>
   );
 }

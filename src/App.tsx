@@ -15,6 +15,7 @@ import Connectors from "./pages/Connectors";
 import AuditShield from "./pages/AuditShield";
 import Marketplace from "./pages/Marketplace";
 import SettingsPage from "./pages/Settings";
+import AdvisoryCompliancePage from "./pages/AdvisoryCompliancePage";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -35,6 +36,7 @@ const App = () => (
                 <Route path="/growth" element={<GrowthDashboard />} />
                 <Route path="/cases" element={<CaseManager />} />
                 <Route path="/graph" element={<GraphAnalytics />} />
+                <Route path="/advisory" element={<AdvisoryCompliancePage />} />
                 <Route path="/rules" element={<RuleEngine />} />
                 <Route path="/federation" element={<FederationConsole />} />
                 <Route path="/connectors" element={<Connectors />} />
