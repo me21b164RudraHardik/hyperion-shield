@@ -6,6 +6,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { Sidebar } from "./components/Sidebar";
 import { DashboardHeader } from "./components/DashboardHeader";
 import Dashboard from "./pages/Dashboard";
+import GrowthDashboard from "./pages/GrowthDashboard";
 import CaseManager from "./pages/CaseManager";
 import GraphAnalytics from "./pages/GraphAnalytics";
 import RuleEngine from "./pages/RuleEngine";
@@ -31,6 +32,7 @@ const App = () => (
             <main className="flex-1 overflow-auto">
               <Routes>
                 <Route path="/" element={<Dashboard />} />
+                <Route path="/growth" element={<GrowthDashboard />} />
                 <Route path="/cases" element={<CaseManager />} />
                 <Route path="/graph" element={<GraphAnalytics />} />
                 <Route path="/rules" element={<RuleEngine />} />

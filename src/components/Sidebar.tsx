@@ -15,7 +15,8 @@ import {
   ChevronRight,
   Target,
   Lock,
-  Zap
+  Zap,
+  TrendingUp
 } from "lucide-react";
 
 const navigationItems = [
@@ -24,6 +25,12 @@ const navigationItems = [
     href: "/",
     icon: BarChart3,
     description: "Overview & KPIs"
+  },
+  {
+    title: "Growth Analytics",
+    href: "/growth",
+    icon: TrendingUp,
+    description: "Business Performance"
   },
   {
     title: "Case Manager",
