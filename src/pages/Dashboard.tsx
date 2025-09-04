@@ -97,7 +97,7 @@ const AlertsTable = () => {
                                 <Badge className={
                                   alert.risk === 'CRITICAL' ? 'bg-red-100 text-red-800 font-semibold' :
                                   alert.risk === 'HIGH' ? 'bg-orange-100 text-orange-800 font-semibold' :
-                                  'bg-amber-100 text-amber-800 font-semibold'
+                                  'bg-amber-100 text-amber-800 font-semibold' // For MEDIUM
                                 }>
                                   {alert.risk}
                                 </Badge>
