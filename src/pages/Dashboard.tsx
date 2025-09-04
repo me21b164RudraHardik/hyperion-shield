@@ -95,12 +95,17 @@ const AlertsTable = () => {
                               <td className="px-6 py-4 text-gray-700">{alert.type}</td>
                               <td className="px-6 py-4">
                                 <Badge className={
-                                  alert.risk === 'CRITICAL' ? 'bg-red-100 text-red-800 font-semibold' :
-                                  alert.risk === 'HIGH' ? 'bg-orange-100 text-orange-800 font-semibold' :
-                                  'bg-amber-100 text-amber-800 font-semibold' // For MEDIUM
+                                  alert.risk === 'CRITICAL' 
+                                    ? 'bg-red-100 text-red-800 font-semibold'  // Critical -> red
+                                    : alert.risk === 'HIGH' 
+                                    ? 'bg-orange-100 text-orange-800 font-semibold'  // High -> orange
+                                    : alert.risk === 'MEDIUM' 
+                                    ? 'bg-yellow-100 text-yellow-800 font-semibold'  // Medium -> yellow (or amber)
+                                    : '' // For other cases if needed
                                 }>
                                   {alert.risk}
                                 </Badge>
+
                               </td>
                               <td className="px-6 py-4 text-gray-500">{alert.time}</td>
                             </tr>
